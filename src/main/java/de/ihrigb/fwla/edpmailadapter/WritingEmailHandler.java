@@ -49,7 +49,7 @@ class WritingEmailHandler implements EmailHandler {
 		}
 
 		// STICHWORT
-		pattern = Pattern.compile("\\d+\\s\\/\\s(.+)\\s\\-\\s");
+		pattern = Pattern.compile("\\d+\\s\\/\\s\\w\\-(.+)\\s\\-\\s");
 		matcher = pattern.matcher(subject);
 		if (matcher.find()) {
 			data.put("STICHWORT", matcher.group(1));

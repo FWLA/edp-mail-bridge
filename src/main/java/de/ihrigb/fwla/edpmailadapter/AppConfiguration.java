@@ -3,6 +3,7 @@ package de.ihrigb.fwla.edpmailadapter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.channel.DirectChannel;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @org.springframework.context.annotation.Configuration
 @EnableConfigurationProperties(Properties.class)
+@ConditionalOnProperty(prefix = "app.receive", name = "host", matchIfMissing = false)
 class AppConfiguration {
 
 	@Bean

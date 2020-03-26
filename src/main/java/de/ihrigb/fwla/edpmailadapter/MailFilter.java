@@ -14,7 +14,7 @@ class MailFilter {
 	FilterResult filter(String sender) {
 		if (properties.getWhitelist() != null && !properties.getWhitelist().isEmpty()) {
 			if (StringUtils.containsIgnoreCase(properties.getWhitelist(), sender)) {
-				log.debug("Mail from '{}' filtered as 'HOT'.", sender);
+				log.debug("Mail from '{}' filtered as 'ACCEPTED'.", sender);
 				return FilterResult.ACCEPTED;
 			}
 		}

@@ -40,11 +40,11 @@ class ReceivingMessageHandler implements MessageHandler {
 
 				switch (new MailFilter(properties).filter(sender)) {
 					case REJECTED:
-						log.info("Mail from '{}' was rejected.", sender);
+						log.info("Mail from '{}' rejected.", sender);
 						return;
 					case ACCEPTED:
 					default:
-						log.info("Mail from '{}' classified as hot.", sender);
+						log.info("Mail from '{}' accepted.", sender);
 						break;
 				}
 
