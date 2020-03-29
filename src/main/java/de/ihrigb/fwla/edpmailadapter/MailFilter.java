@@ -12,11 +12,12 @@ class MailFilter {
 	private final ReceivingProperties properties;
 
 	FilterResult filter(String sender) {
-		if (properties.getWhitelist() != null && !properties.getWhitelist().isEmpty()) {
-			if (StringUtils.containsIgnoreCase(properties.getWhitelist(), sender)) {
-				log.debug("Mail from '{}' filtered as 'ACCEPTED'.", sender);
-				return FilterResult.ACCEPTED;
-			}
+		if (properties.getWhitelist() == null || properties.getWhitelist().isEmpty()) {
+			return FilterResult.ACCEPTED;
+		}
+		if (StringUtils.containsIgnoreCase(properties.getWhitelist(), sender)) {
+			log.debug("Mail from '{}' filtered as 'ACCEPTED'.", sender);
+			return FilterResult.ACCEPTED;
 		}
 
 		log.debug("Mail from '{}' filtered as 'REJECTED'.", sender);
