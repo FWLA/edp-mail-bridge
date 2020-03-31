@@ -55,5 +55,4 @@ public class ValueExtractionTest {
 		assertEquals("BLA - DENG BAUM", map.get("OBJEKTNAME"));
 		assertEquals("1", map.get("SONDERSIGNAL"));
 	}
-
 }

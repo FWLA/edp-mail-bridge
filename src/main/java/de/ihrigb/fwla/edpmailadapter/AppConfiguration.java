@@ -3,6 +3,8 @@ package de.ihrigb.fwla.edpmailadapter;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
+import javax.net.ssl.SSLSocketFactory;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -28,15 +30,25 @@ class AppConfiguration {
 
 	@Bean
 	ImapMailReceiver imapMailReceiver(Properties properties) {
+
+		java.util.Properties javaMailProperties = new java.util.Properties();
+		javaMailProperties.setProperty("mail.imaps.socketFactory.class", SSLSocketFactory.class.getName());
+		javaMailProperties.setProperty("mail.imap.starttls.enable", "true");
+		javaMailProperties.setProperty("mail.imaps.socketFactory.fallback", "false");
+		javaMailProperties.setProperty("mail.store.protocol", "imaps");
+		// javaMailProperties.setProperty("mail.debug", "true");
+
 		ReceivingProperties receivingProperties = properties.getReceive();
 
 		String userInfo = String.format("%s:%s", receivingProperties.getUsername(), receivingProperties.getPassword());
 
-		String url = String.format("imap://%s@%s:143/inbox", UriUtils.encodeUserInfo(userInfo, StandardCharsets.UTF_8),
-				UriUtils.encodeHost(receivingProperties.getHost(), StandardCharsets.UTF_8));
+		String url = String.format("imaps://%s@%s:%d/INBOX", UriUtils.encodeUserInfo(userInfo, StandardCharsets.UTF_8),
+				UriUtils.encodeHost(receivingProperties.getHost(), StandardCharsets.UTF_8),
+				receivingProperties.getPort());
 
 		log.info("Connecting to {}.", url);
 		ImapMailReceiver imapMailReceiver = new ImapMailReceiver(url);
+		imapMailReceiver.setJavaMailProperties(javaMailProperties);
 		imapMailReceiver.setShouldMarkMessagesAsRead(Boolean.TRUE);
 		return imapMailReceiver;
 	}
@@ -58,6 +70,7 @@ class AppConfiguration {
 
 	@Bean
 	MessageHandler messageHandler(Properties properties) {
-		return new ReceivingMessageHandler(properties.getReceive(), Collections.singleton(writingEmailHandler(properties)));
+		return new ReceivingMessageHandler(properties.getReceive(),
+				Collections.singleton(writingEmailHandler(properties)));
 	}
 }

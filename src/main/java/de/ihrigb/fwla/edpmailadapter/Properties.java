@@ -19,6 +19,7 @@ class Properties {
 	@Setter
 	static class ReceivingProperties {
 		private String host;
+		private int port;
 		private String username;
 		private String password;
 		private Set<String> whitelist;
