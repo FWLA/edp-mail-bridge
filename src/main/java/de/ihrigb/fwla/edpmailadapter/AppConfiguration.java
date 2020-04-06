@@ -1,7 +1,6 @@
 package de.ihrigb.fwla.edpmailadapter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 
 import javax.net.ssl.SSLSocketFactory;
 
@@ -15,6 +14,10 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.web.util.UriUtils;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
+import de.ihrigb.fwla.mail.EmailBodyConverter;
+import de.ihrigb.fwla.mail.EmailHandler;
+import de.ihrigb.fwla.mail.ReceivingMessageHandler;
+import de.ihrigb.fwla.mail.TextEmailBodyConverter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,7 +45,8 @@ class AppConfiguration {
 
 		String userInfo = String.format("%s:%s", receivingProperties.getUsername(), receivingProperties.getPassword());
 
-		String url = String.format("imaps://%s@%s:%d/INBOX", UriUtils.encodeUserInfo(userInfo, StandardCharsets.UTF_8),
+		String url = String.format("%s://%s@%s:%d/INBOX", receivingProperties.getProtocol(),
+				UriUtils.encodeUserInfo(userInfo, StandardCharsets.UTF_8),
 				UriUtils.encodeHost(receivingProperties.getHost(), StandardCharsets.UTF_8),
 				receivingProperties.getPort());
 
@@ -70,7 +74,9 @@ class AppConfiguration {
 
 	@Bean
 	MessageHandler messageHandler(Properties properties) {
-		return new ReceivingMessageHandler(properties.getReceive(),
-				Collections.singleton(writingEmailHandler(properties)));
+		EmailHandler<String> emailHandler = new WritingEmailHandler(properties.getWrite());
+		EmailBodyConverter<String> emailBodyConverter = new TextEmailBodyConverter();
+
+		return new ReceivingMessageHandler<>(emailBodyConverter, emailHandler);
 	}
 }

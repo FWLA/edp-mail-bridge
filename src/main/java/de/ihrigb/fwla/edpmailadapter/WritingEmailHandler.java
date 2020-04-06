@@ -12,13 +12,15 @@ import org.apache.commons.io.FileUtils;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.WritingProperties;
 import de.ihrigb.fwla.edpmailadapter.ValueExtraction.Value;
+import de.ihrigb.fwla.mail.Email;
+import de.ihrigb.fwla.mail.EmailHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class WritingEmailHandler implements EmailHandler {
+class WritingEmailHandler implements EmailHandler<String> {
 
 	private String currentDateTime() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd_HH-mm-ss");
@@ -28,7 +30,7 @@ class WritingEmailHandler implements EmailHandler {
 	private final WritingProperties properties;
 
 	@Override
-	public void handle(Email email) {
+	public void handle(Email<String> email) {
 
 		Set<Value> values = ValueExtraction.extract(email);
 

@@ -1,17 +1,20 @@
 package de.ihrigb.fwla.edpmailadapter;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
+import de.ihrigb.fwla.mail.EmailSenderFilter;
+import de.ihrigb.fwla.mail.FilterResult;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-class MailFilter {
+class MailFilter implements EmailSenderFilter {
 
 	private final ReceivingProperties properties;
 
-	FilterResult filter(String sender) {
+	@Override
+	public FilterResult filter(String sender) {
 		if (properties.getWhitelist() == null || properties.getWhitelist().isEmpty()) {
 			return FilterResult.ACCEPTED;
 		}
@@ -22,9 +25,5 @@ class MailFilter {
 
 		log.debug("Mail from '{}' filtered as 'REJECTED'.", sender);
 		return FilterResult.REJECTED;
-	}
-
-	static enum FilterResult {
-		ACCEPTED, REJECTED;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.ihrigb.fwla.edpmailadapter.ValueExtraction.RegexValueProvider.Source;
+import de.ihrigb.fwla.mail.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -50,7 +51,7 @@ final class ValueExtraction {
 		VALUE_PROVIDERS = Collections.unmodifiableSet(valueProviders);
 	}
 
-	static Set<Value> extract(Email email) {
+	static Set<Value> extract(Email<String> email) {
 		return VALUE_PROVIDERS.stream().map(valueProvider -> {
 			Optional<String> value = valueProvider.extract(email);
 			return value.map(v -> new Value(valueProvider.getName(), v)).orElse(null);
@@ -70,7 +71,7 @@ final class ValueExtraction {
 	static interface ValueProvider {
 		String getName();
 
-		Optional<String> extract(Email email);
+		Optional<String> extract(Email<String> email);
 	}
 
 	static class RegexValueProvider implements ValueProvider {
@@ -115,7 +116,7 @@ final class ValueExtraction {
 		}
 
 		@Override
-		public Optional<String> extract(Email email) {
+		public Optional<String> extract(Email<String> email) {
 			String text;
 			switch (source) {
 				case SUBJECT:

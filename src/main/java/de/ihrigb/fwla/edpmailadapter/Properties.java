@@ -18,6 +18,7 @@ class Properties {
 	@Getter
 	@Setter
 	static class ReceivingProperties {
+		private String protocol;
 		private String host;
 		private int port;
 		private String username;

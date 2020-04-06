@@ -6,8 +6,8 @@ import java.util.Collections;
 
 import org.junit.Test;
 
-import de.ihrigb.fwla.edpmailadapter.MailFilter.FilterResult;
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
+import de.ihrigb.fwla.mail.FilterResult;
 
 public class MailFilterTest {
 

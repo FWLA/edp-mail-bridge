@@ -2,14 +2,15 @@ package de.ihrigb.fwla.edpmailadapter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import de.ihrigb.fwla.edpmailadapter.ValueExtraction.Value;
+import de.ihrigb.fwla.mail.Email;
 
 public class ValueExtractionTest {
 
@@ -18,6 +19,7 @@ public class ValueExtractionTest {
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void test1() throws Exception {
 		String subject = "1234567890 / F-2 - BLA - DENG BAUM, Musterstadt-Ortsteil, Musterstraße 8";
 		// @formatter:off
@@ -37,7 +39,9 @@ public class ValueExtractionTest {
 				+ "EM:MUSTER 1  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
 		// @formatter:on
 
-		Email email = new Email("sender", subject, body, Instant.now());
+		Email<String> email = Mockito.mock(Email.class);
+		Mockito.when(email.getSubject()).thenReturn(subject);
+		Mockito.when(email.getBody()).thenReturn(body);
 
 		Set<Value> values = ValueExtraction.extract(email);
 		Map<String, String> map = convert(values);
