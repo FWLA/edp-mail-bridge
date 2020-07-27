@@ -1,5 +1,6 @@
 package de.ihrigb.fwla.edpmailadapter;
 
+import de.ihrigb.commons.StringUtils;
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
 import de.ihrigb.fwla.mail.EmailSenderFilter;
 import de.ihrigb.fwla.mail.FilterResult;
