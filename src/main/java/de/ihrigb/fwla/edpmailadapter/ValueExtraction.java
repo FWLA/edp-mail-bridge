@@ -36,11 +36,17 @@ final class ValueExtraction {
 		valueProviders
 				.add(new RegexValueProvider("STICHWORT_KLARTEXT", "Einsatzanlass\\:\\s\\w\\s(.+)\\s(O H N E|M I T)"));
 		valueProviders.add(new RegexValueProvider("MELDUNG", "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider("MELDEBILD", "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
 		valueProviders.add(new RegexValueProvider("INTERNE_NUMMER", "(\\d+)", Source.SUBJECT));
 		valueProviders.add(new RegexValueProvider("ORT", "Ort\\:[^\\S\\n]+(.+)\\r\\n"));
 		valueProviders.add(new RegexValueProvider("ORTSTEIL", "Ortsteil\\:[^\\S\\n]+(.+)\\r\\n"));
 		valueProviders.add(new RegexValueProvider("STRASSE", "Straße\\:[^\\S\\n]+(.+)\\r\\n"));
 		valueProviders.add(new RegexValueProvider("OBJEKTNAME", "Objekt\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider("BEMERKUNG", "Bemerkung\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider("KOORDX",
+				"Koordinaten\\:[^\\S\\n]+POINT\\s\\((\\d+\\.\\d+)\\s\\d+\\.\\d+\\)\\r\\n"));
+		valueProviders.add(new RegexValueProvider("KOORDY",
+				"Koordinaten\\:[^\\S\\n]+POINT\\s\\(\\d+\\.\\d+\\s(\\d+\\.\\d+)\\)\\r\\n"));
 		valueProviders.add(
 				new RegexValueProvider("SONDERSIGNAL", "Einsatzanlass\\:[^\\S\\n]+.+(O H N E|M I T).+\\r\\n", value -> {
 					if ("M I T".equals(value)) {

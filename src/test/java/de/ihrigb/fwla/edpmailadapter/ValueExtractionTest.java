@@ -46,17 +46,21 @@ public class ValueExtractionTest {
 		Set<Value> values = ValueExtraction.extract(email);
 		Map<String, String> map = convert(values);
 
-		assertEquals(10, map.size());
+		assertEquals(14, map.size());
 
 		assertEquals("F", map.get("EINSATZART"));
 		assertEquals("2", map.get("STICHWORT"));
 		assertEquals("Feuer mittel", map.get("STICHWORT_KLARTEXT"));
 		assertEquals("brennen Stroh / Heuballen auf freiem Feld", map.get("MELDUNG"));
+		assertEquals("brennen Stroh / Heuballen auf freiem Feld", map.get("MELDEBILD"));
 		assertEquals("1234567890", map.get("INTERNE_NUMMER"));
 		assertEquals("Musterstadt", map.get("ORT"));
 		assertEquals("Ortsteil", map.get("ORTSTEIL"));
 		assertEquals("Musterstraße 8", map.get("STRASSE"));
 		assertEquals("BLA - DENG BAUM", map.get("OBJEKTNAME"));
 		assertEquals("1", map.get("SONDERSIGNAL"));
+		assertEquals("kurz nach dem Wasser auf dem Feld", map.get("BEMERKUNG"));
+		assertEquals("1.39957217", map.get("KOORDX"));
+		assertEquals("12.63357332", map.get("KOORDY"));
 	}
 }
