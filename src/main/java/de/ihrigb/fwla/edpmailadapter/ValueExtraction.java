@@ -31,7 +31,12 @@ final class ValueExtraction {
 		// <<<FEHLT>>>
 
 		Set<ValueProvider> valueProviders = new HashSet<>();
-		valueProviders.add(new RegexValueProvider("EINSATZART", "Einsatzanlass\\:\\s+(\\w)"));
+		valueProviders.add(new RegexValueProvider("EINSATZART", "Einsatzanlass\\:\\s+(\\w)", v -> {
+			if ("U".equals(v)) {
+				return "H";
+			}
+			return v;
+		}));
 		valueProviders.add(new RegexValueProvider("STICHWORT", "\\d+\\s\\/\\s\\w\\-(.+?)\\s\\-\\s", Source.SUBJECT));
 		valueProviders
 				.add(new RegexValueProvider("STICHWORT_KLARTEXT", "Einsatzanlass\\:\\s\\w\\s(.+)\\s(O H N E|M I T)"));
