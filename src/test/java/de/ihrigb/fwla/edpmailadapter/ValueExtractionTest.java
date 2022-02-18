@@ -6,10 +6,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
 
+import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
 import de.ihrigb.fwla.edpmailadapter.ValueExtraction.Value;
 import de.ihrigb.fwla.mail.Email;
 
@@ -17,6 +19,15 @@ public class ValueExtractionTest {
 
 	private static Map<String, String> convert(Set<Value> values) {
 		return values.stream().collect(Collectors.toMap(Value::getName, Value::getValue));
+	}
+
+	private ValueExtraction testee;
+
+	@Before
+	public void setUp() throws Exception {
+		ExtractionProperties properties = new ExtractionProperties();
+		properties.setAlarmEm("MUSTER\\s1");
+		this.testee = new ValueExtraction(properties);
 	}
 
 	@Test
@@ -37,17 +48,17 @@ public class ValueExtractionTest {
 				+ "Zielort:       \r\n"
 				+ "Zeiten:        28.03.2020 22:24:22     28.03.2020 22:26:27\r\n"
 				+ "EM:MUST 01  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende: \r\n"
-				+ "EM:MUSTER 1  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
+				+ "EM:MUSTER 1  alarmiert: 22:24:23  Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
 		// @formatter:on
 
 		Email<String> email = Mockito.mock(Email.class);
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = ValueExtraction.extract(email);
+		Set<Value> values = testee.extract(email);
 		Map<String, String> map = convert(values);
 
-		assertEquals(14, map.size());
+		assertEquals(16, map.size());
 
 		assertEquals("F", map.get("EINSATZART"));
 		assertEquals("2", map.get("STICHWORT"));
@@ -63,6 +74,8 @@ public class ValueExtractionTest {
 		assertEquals("kurz nach dem Wasser auf dem Feld", map.get("BEMERKUNG"));
 		assertEquals("1.39957217", map.get("KOORDX"));
 		assertEquals("12.63357332", map.get("KOORDY"));
+		assertEquals("28.03.2020 22:24:22", map.get("MELDUNG_LST"));
+		assertEquals("22:24:23", map.get("ALARM_LST"));
 	}
 
 	@Test
@@ -84,17 +97,17 @@ public class ValueExtractionTest {
 				+ "Zielort:       \r\n"
 				+ "Zeiten:        28.03.2020 22:24:22     28.03.2020 22:26:27\r\n"
 				+ "EM:MUST 01  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende: \r\n"
-				+ "EM:MUSTER 1  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
+				+ "EM:MUSTER 1  alarmiert: 22:24:23  Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
 		// @formatter:on
 
 		Email<String> email = Mockito.mock(Email.class);
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = ValueExtraction.extract(email);
+		Set<Value> values = testee.extract(email);
 		Map<String, String> map = convert(values);
 
-		assertEquals(14, map.size());
+		assertEquals(16, map.size());
 
 		assertEquals("H", map.get("EINSATZART"));
 		assertEquals("2", map.get("STICHWORT"));
@@ -110,6 +123,8 @@ public class ValueExtractionTest {
 		assertEquals("kurz nach dem Wasser auf dem Feld", map.get("BEMERKUNG"));
 		assertEquals("1.39957217", map.get("KOORDX"));
 		assertEquals("12.63357332", map.get("KOORDY"));
+		assertEquals("28.03.2020 22:24:22", map.get("MELDUNG_LST"));
+		assertEquals("22:24:23", map.get("ALARM_LST"));
 	}
 
 	@Test
@@ -131,17 +146,17 @@ public class ValueExtractionTest {
 				+ "Zielort:       \r\n"
 				+ "Zeiten:        28.03.2020 22:24:22     28.03.2020 22:26:27\r\n"
 				+ "EM:MUST 01  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende: \r\n"
-				+ "EM:MUSTER 1  alarmiert:   Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
+				+ "EM:MUSTER 1  alarmiert: 22:24:23  Wache ab:   Einsatz an:   Einsatz ab:   Ende:";
 		// @formatter:on
 
 		Email<String> email = Mockito.mock(Email.class);
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = ValueExtraction.extract(email);
+		Set<Value> values = testee.extract(email);
 		Map<String, String> map = convert(values);
 
-		assertEquals(14, map.size());
+		assertEquals(16, map.size());
 
 		assertEquals("H", map.get("EINSATZART"));
 		assertEquals("2", map.get("STICHWORT"));
@@ -157,5 +172,7 @@ public class ValueExtractionTest {
 		assertEquals("kurz nach dem Wasser auf dem Feld", map.get("BEMERKUNG"));
 		assertEquals("1.39957217", map.get("KOORDX"));
 		assertEquals("12.63357332", map.get("KOORDY"));
+		assertEquals("28.03.2020 22:24:22", map.get("MELDUNG_LST"));
+		assertEquals("22:24:23", map.get("ALARM_LST"));
 	}
 }

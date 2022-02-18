@@ -15,7 +15,6 @@ import org.springframework.web.util.UriUtils;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
 import de.ihrigb.fwla.mail.EmailBodyConverter;
-import de.ihrigb.fwla.mail.EmailHandler;
 import de.ihrigb.fwla.mail.ReceivingMessageHandler;
 import de.ihrigb.fwla.mail.TextEmailBodyConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 class AppConfiguration {
 
 	@Bean
-	WritingEmailHandler writingEmailHandler(Properties properties) {
-		return new WritingEmailHandler(properties.getWrite());
+	ValueExtraction valueExtraction(Properties properties) {
+		return new ValueExtraction(properties.getExtraction());
+	}
+
+	@Bean
+	WritingEmailHandler writingEmailHandler(Properties properties, ValueExtraction valueExtraction) {
+		return new WritingEmailHandler(properties.getWrite(), valueExtraction);
 	}
 
 	@Bean
@@ -73,10 +77,9 @@ class AppConfiguration {
 	}
 
 	@Bean
-	MessageHandler messageHandler(Properties properties) {
-		EmailHandler<String> emailHandler = new WritingEmailHandler(properties.getWrite());
+	MessageHandler messageHandler(Properties properties, WritingEmailHandler writingEmailHandler) {
 		EmailBodyConverter<String> emailBodyConverter = new TextEmailBodyConverter();
 
-		return new ReceivingMessageHandler<>(emailBodyConverter, emailHandler);
+		return new ReceivingMessageHandler<>(emailBodyConverter, writingEmailHandler);
 	}
 }

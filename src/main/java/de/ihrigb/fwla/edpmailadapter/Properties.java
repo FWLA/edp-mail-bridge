@@ -14,6 +14,7 @@ class Properties {
 
 	private ReceivingProperties receive;
 	private WritingProperties write;
+	private ExtractionProperties extraction = new ExtractionProperties();
 
 	@Getter
 	@Setter
@@ -30,5 +31,11 @@ class Properties {
 	@Setter
 	static class WritingProperties {
 		private String directory;
+	}
+
+	@Getter
+	@Setter
+	static class ExtractionProperties {
+		private String alarmEm;
 	}
 }

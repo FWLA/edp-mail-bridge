@@ -28,11 +28,12 @@ class WritingEmailHandler implements EmailHandler<String> {
 	}
 
 	private final WritingProperties properties;
+	private final ValueExtraction valueExtraction;
 
 	@Override
 	public void handle(Email<String> email) {
 
-		Set<Value> values = ValueExtraction.extract(email);
+		Set<Value> values = this.valueExtraction.extract(email);
 
 		try {
 			File tempFile = File.createTempFile("edp_", ".txt");

@@ -10,17 +10,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
 import de.ihrigb.fwla.edpmailadapter.ValueExtraction.RegexValueProvider.Source;
 import de.ihrigb.fwla.mail.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-final class ValueExtraction {
+class ValueExtraction {
 
-	private static final Set<ValueProvider> VALUE_PROVIDERS;
+	private final Set<ValueProvider> valueProviders;
 
-	static {
+	ValueExtraction(ExtractionProperties properties) {
 		// MELDENDER
 		// <<<FEHLT>>>
 
@@ -59,17 +60,20 @@ final class ValueExtraction {
 					}
 					return "0";
 				}));
-		VALUE_PROVIDERS = Collections.unmodifiableSet(valueProviders);
+		valueProviders.add(new RegexValueProvider("MELDUNG_LST",
+				"Zeiten\\:[^\\S\\n]+(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d\\s\\d\\d\\:\\d\\d\\:\\d\\d).+\\r\\n"));
+		if (properties.getAlarmEm() != null) {
+			valueProviders.add(new RegexValueProvider("ALARM_LST",
+					"EM\\:" + properties.getAlarmEm() + "\\s+alarmiert\\:\\s(\\d\\d\\:\\d\\d\\:\\d\\d).+(\\r\\n)?"));
+		}
+		this.valueProviders = Collections.unmodifiableSet(valueProviders);
 	}
 
-	static Set<Value> extract(Email<String> email) {
-		return VALUE_PROVIDERS.stream().map(valueProvider -> {
+	Set<Value> extract(Email<String> email) {
+		return valueProviders.stream().map(valueProvider -> {
 			Optional<String> value = valueProvider.extract(email);
 			return value.map(v -> new Value(valueProvider.getName(), v)).orElse(null);
 		}).filter(Objects::nonNull).collect(Collectors.toSet());
-	}
-
-	private ValueExtraction() {
 	}
 
 	@Getter
