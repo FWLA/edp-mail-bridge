@@ -1,12 +1,15 @@
 package de.ihrigb.fwla.edpmailadapter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLSocketFactory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.mail.ImapIdleChannelAdapter;
 import org.springframework.integration.mail.ImapMailReceiver;
@@ -16,23 +19,24 @@ import org.springframework.web.util.UriUtils;
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
 import de.ihrigb.fwla.mail.EmailBodyConverter;
 import de.ihrigb.fwla.mail.ReceivingMessageHandler;
-import de.ihrigb.fwla.mail.TextEmailBodyConverter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@org.springframework.context.annotation.Configuration
+@Configuration
 @EnableConfigurationProperties(Properties.class)
 @ConditionalOnProperty(prefix = "app.receive", name = "host", matchIfMissing = false)
 class AppConfiguration {
 
 	@Bean
-	ValueExtraction valueExtraction(Properties properties) {
-		return new ValueExtraction(properties.getExtraction());
-	}
+	WritingEmailHandler writingEmailHandler(Properties properties) {
+		FileWriter fileWriter = new FileWriter(properties.getWrite());
 
-	@Bean
-	WritingEmailHandler writingEmailHandler(Properties properties, ValueExtraction valueExtraction) {
-		return new WritingEmailHandler(properties.getWrite(), valueExtraction);
+		DefaultValueExtractor defaultValueExtractor = new DefaultValueExtractor(properties.getExtraction());
+
+		List<ValueExtractor> valueExtractors = new ArrayList<>();
+		valueExtractors.add(new UnwetterValueExtractor(properties.getUnwetter()));
+
+		return new WritingEmailHandler(fileWriter, defaultValueExtractor, valueExtractors);
 	}
 
 	@Bean
@@ -78,7 +82,7 @@ class AppConfiguration {
 
 	@Bean
 	MessageHandler messageHandler(Properties properties, WritingEmailHandler writingEmailHandler) {
-		EmailBodyConverter<String> emailBodyConverter = new TextEmailBodyConverter();
+		EmailBodyConverter<String> emailBodyConverter = new PlainTextEmailBodyConverter();
 
 		return new ReceivingMessageHandler<>(emailBodyConverter, writingEmailHandler);
 	}

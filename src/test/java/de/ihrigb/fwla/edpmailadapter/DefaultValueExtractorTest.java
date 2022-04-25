@@ -12,22 +12,21 @@ import org.junit.jupiter.api.DisplayName;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
-import de.ihrigb.fwla.edpmailadapter.ValueExtraction.Value;
 import de.ihrigb.fwla.mail.Email;
 
-public class ValueExtractionTest {
+public class DefaultValueExtractorTest {
 
 	private static Map<String, String> convert(Set<Value> values) {
 		return values.stream().collect(Collectors.toMap(Value::getName, Value::getValue));
 	}
 
-	private ValueExtraction testee;
+	private DefaultValueExtractor testee;
 
 	@Before
 	public void setUp() throws Exception {
 		ExtractionProperties properties = new ExtractionProperties();
 		properties.setAlarmEm("MUSTER\\s1");
-		this.testee = new ValueExtraction(properties);
+		this.testee = new DefaultValueExtractor(properties);
 	}
 
 	@Test
@@ -55,8 +54,10 @@ public class ValueExtractionTest {
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = testee.extract(email);
-		Map<String, String> map = convert(values);
+		ValuesConsumer valuesConsumer = new ValuesConsumer();
+		testee.extract(email, valuesConsumer);
+		assertEquals(1, valuesConsumer.getTimesCalled());
+		Map<String, String> map = convert(valuesConsumer.next());
 
 		assertEquals(16, map.size());
 
@@ -104,8 +105,10 @@ public class ValueExtractionTest {
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = testee.extract(email);
-		Map<String, String> map = convert(values);
+		ValuesConsumer valuesConsumer = new ValuesConsumer();
+		testee.extract(email, valuesConsumer);
+		assertEquals(1, valuesConsumer.getTimesCalled());
+		Map<String, String> map = convert(valuesConsumer.next());
 
 		assertEquals(16, map.size());
 
@@ -153,8 +156,10 @@ public class ValueExtractionTest {
 		Mockito.when(email.getSubject()).thenReturn(subject);
 		Mockito.when(email.getBody()).thenReturn(body);
 
-		Set<Value> values = testee.extract(email);
-		Map<String, String> map = convert(values);
+		ValuesConsumer valuesConsumer = new ValuesConsumer();
+		testee.extract(email, valuesConsumer);
+		assertEquals(1, valuesConsumer.getTimesCalled());
+		Map<String, String> map = convert(valuesConsumer.next());
 
 		assertEquals(16, map.size());
 

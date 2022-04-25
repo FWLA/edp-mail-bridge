@@ -5,23 +5,21 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
-import de.ihrigb.fwla.edpmailadapter.ValueExtraction.RegexValueProvider.Source;
 import de.ihrigb.fwla.mail.Email;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-class ValueExtraction {
+class DefaultValueExtractor implements ValueExtractor {
 
 	private final Set<ValueProvider> valueProviders;
 
-	ValueExtraction(ExtractionProperties properties) {
+	DefaultValueExtractor(ExtractionProperties properties) {
 		// MELDENDER
 		// <<<FEHLT>>>
 
@@ -32,35 +30,38 @@ class ValueExtraction {
 		// <<<FEHLT>>>
 
 		Set<ValueProvider> valueProviders = new HashSet<>();
-		valueProviders.add(new RegexValueProvider("EINSATZART", "Einsatzanlass\\:\\s+(\\w)", v -> {
+		valueProviders.add(new RegexValueProvider(Constants.Fields.EINSATZART, "Einsatzanlass\\:\\s+(\\w)", v -> {
 			if ("U".equals(v)) {
 				return "H";
 			}
 			return v;
 		}));
-		valueProviders.add(new RegexValueProvider("STICHWORT", "\\d+\\s\\/\\s\\w\\-(.+?)\\s\\-\\s", Source.SUBJECT));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.STICHWORT, "\\d+\\s\\/\\s\\w\\-(.+?)\\s\\-\\s",
+				Source.SUBJECT));
 		valueProviders
-				.add(new RegexValueProvider("STICHWORT_KLARTEXT", "Einsatzanlass\\:\\s\\w\\s(.+)\\s(O H N E|M I T)"));
-		valueProviders.add(new RegexValueProvider("MELDUNG", "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("MELDEBILD", "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("INTERNE_NUMMER", "(\\d+)", Source.SUBJECT));
-		valueProviders.add(new RegexValueProvider("ORT", "Ort\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("ORTSTEIL", "Ortsteil\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("STRASSE", "Straße\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("OBJEKTNAME", "Objekt\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("BEMERKUNG", "Bemerkung\\:[^\\S\\n]+(.+)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("KOORDX",
+				.add(new RegexValueProvider(Constants.Fields.STICHWORT_KLARTEXT,
+						"Einsatzanlass\\:\\s\\w\\s(.+)\\s(O H N E|M I T)"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.MELDUNG, "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.MELDEBILD, "Meldebild\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.INTERNE_NUMMER, "(\\d+)", Source.SUBJECT));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.ORT, "Ort\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.ORTSTEIL, "Ortsteil\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.STRASSE, "Straße\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.OBJEKTNAME, "Objekt\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.BEMERKUNG, "Bemerkung\\:[^\\S\\n]+(.+)\\r\\n"));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.KOORDX,
 				"Koordinaten\\:[^\\S\\n]+POINT\\s\\((\\d+\\.\\d+)\\s\\d+\\.\\d+\\)\\r\\n"));
-		valueProviders.add(new RegexValueProvider("KOORDY",
+		valueProviders.add(new RegexValueProvider(Constants.Fields.KOORDY,
 				"Koordinaten\\:[^\\S\\n]+POINT\\s\\(\\d+\\.\\d+\\s(\\d+\\.\\d+)\\)\\r\\n"));
 		valueProviders.add(
-				new RegexValueProvider("SONDERSIGNAL", "Einsatzanlass\\:[^\\S\\n]+.+(O H N E|M I T).+\\r\\n", value -> {
-					if ("M I T".equals(value)) {
-						return "1";
-					}
-					return "0";
-				}));
-		valueProviders.add(new RegexValueProvider("MELDUNG_LST",
+				new RegexValueProvider(Constants.Fields.SONDERSIGNAL,
+						"Einsatzanlass\\:[^\\S\\n]+.+(O H N E|M I T).+\\r\\n", value -> {
+							if ("M I T".equals(value)) {
+								return "1";
+							}
+							return "0";
+						}));
+		valueProviders.add(new RegexValueProvider(Constants.Fields.MELDUNG_LST,
 				"Zeiten\\:[^\\S\\n]+(\\d\\d\\.\\d\\d\\.\\d\\d\\d\\d\\s\\d\\d\\:\\d\\d\\:\\d\\d).+\\r\\n"));
 		if (properties.getAlarmEm() != null) {
 			valueProviders.add(new RegexValueProvider("ALARM_LST",
@@ -69,21 +70,25 @@ class ValueExtraction {
 		this.valueProviders = Collections.unmodifiableSet(valueProviders);
 	}
 
-	Set<Value> extract(Email<String> email) {
-		return valueProviders.stream().map(valueProvider -> {
+	@Override
+	public void extract(Email<String> email, Consumer<Set<Value>> valuesConsumer) {
+		valuesConsumer.accept(valueProviders.stream().map(valueProvider -> {
 			Optional<String> value = valueProvider.extract(email);
 			return value.map(v -> new Value(valueProvider.getName(), v)).orElse(null);
-		}).filter(Objects::nonNull).collect(Collectors.toSet());
+		}).filter(Objects::nonNull).collect(Collectors.toSet()));
 	}
 
-	@Getter
-	@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-	static class Value {
-		private final String name;
-		private final String value;
+	@Override
+	public boolean isApplicable(Email<String> email) {
+		// is the default extractor
+		return true;
 	}
 
-	static interface ValueProvider {
+	enum Source {
+		SUBJECT, BODY;
+	}
+
+	interface ValueProvider {
 		String getName();
 
 		Optional<String> extract(Email<String> email);
@@ -108,6 +113,10 @@ class ValueExtraction {
 
 		RegexValueProvider(String name, String pattern) {
 			this(name, pattern, Function.identity());
+		}
+
+		RegexValueProvider(String name, String pattern, int group) {
+			this(name, pattern, Source.BODY, Function.identity(), group);
 		}
 
 		RegexValueProvider(String name, String pattern, Function<String, String> sanitizer) {
@@ -150,10 +159,6 @@ class ValueExtraction {
 			}
 
 			return Optional.ofNullable(matcher.group(group)).map(defaultSanitizer).map(sanitizer);
-		}
-
-		enum Source {
-			SUBJECT, BODY;
 		}
 	}
 }

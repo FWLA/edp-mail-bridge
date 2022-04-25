@@ -15,6 +15,7 @@ class Properties {
 	private ReceivingProperties receive;
 	private WritingProperties write;
 	private ExtractionProperties extraction = new ExtractionProperties();
+	private UnwetterProperties unwetter = new UnwetterProperties();
 
 	@Getter
 	@Setter
@@ -37,5 +38,12 @@ class Properties {
 	@Setter
 	static class ExtractionProperties {
 		private String alarmEm;
+	}
+
+	@Getter
+	@Setter
+	static class UnwetterProperties {
+		private String einsatzart = "H";
+		private String stichwort = "1";
 	}
 }
