@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 
@@ -22,6 +23,12 @@ class FileWriter {
 	private static String currentDateTime() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-dd_HH-mm-ss");
 		return formatter.format(LocalDateTime.now());
+	}
+
+	private static String randomString() {
+		String uuid = UUID.randomUUID().toString();
+		String[] uuidArr = uuid.split("-");
+		return uuidArr[uuidArr.length - 1];
 	}
 
 	private final WritingProperties properties;
@@ -43,7 +50,7 @@ class FileWriter {
 				}
 			}
 
-			String filename = String.format("%s.txt", currentDateTime());
+			String filename = String.format("%s-%s.txt", currentDateTime(), randomString());
 			File parentDirectory = new File(properties.getDirectory());
 			File targetFile = new File(parentDirectory, filename);
 

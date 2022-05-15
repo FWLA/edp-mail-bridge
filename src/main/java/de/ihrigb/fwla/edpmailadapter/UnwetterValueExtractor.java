@@ -57,7 +57,8 @@ class UnwetterValueExtractor implements ValueExtractor {
 
 	@Override
 	public boolean isApplicable(Email<String> email) {
-		return email.getSubject().startsWith(UnwetterValueExtractor.SUBJECT_PREFIX);
+		String subject = email.getSubject();
+		return subject != null && subject.startsWith(UnwetterValueExtractor.SUBJECT_PREFIX);
 	}
 
 	@Override
