@@ -1,14 +1,14 @@
 package de.ihrigb.fwla.edpmailadapter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
@@ -22,7 +22,7 @@ public class DefaultValueExtractorTest {
 
 	private DefaultValueExtractor testee;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		ExtractionProperties properties = new ExtractionProperties();
 		properties.setAlarmEm("MUSTER\\s1");

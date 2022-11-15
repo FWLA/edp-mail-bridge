@@ -1,10 +1,10 @@
 package de.ihrigb.fwla.edpmailadapter;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Collections;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
 import de.ihrigb.fwla.mail.FilterResult;

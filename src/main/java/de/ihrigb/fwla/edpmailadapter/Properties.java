@@ -12,6 +12,7 @@ import lombok.Setter;
 @ConfigurationProperties(prefix = "app")
 class Properties {
 
+	private OAuthProperties oauth;
 	private ReceivingProperties receive;
 	private WritingProperties write;
 	private ExtractionProperties extraction = new ExtractionProperties();
@@ -20,12 +21,19 @@ class Properties {
 	@Getter
 	@Setter
 	static class ReceivingProperties {
-		private String protocol;
 		private String host;
 		private int port;
 		private String username;
-		private String password;
 		private Set<String> whitelist;
+	}
+
+	@Getter
+	@Setter
+	static class OAuthProperties {
+		private String tokenEndpoint;
+		private String clientId;
+		private String clientSecret;
+		private String scope;
 	}
 
 	@Getter

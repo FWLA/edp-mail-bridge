@@ -4,7 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLSocketFactory;
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -42,19 +43,26 @@ class AppConfiguration {
 	@Bean
 	ImapMailReceiver imapMailReceiver(Properties properties) {
 
-		java.util.Properties javaMailProperties = new java.util.Properties();
-		javaMailProperties.setProperty("mail.imaps.socketFactory.class", SSLSocketFactory.class.getName());
-		javaMailProperties.setProperty("mail.imap.starttls.enable", "true");
-		javaMailProperties.setProperty("mail.imaps.socketFactory.fallback", "false");
-		javaMailProperties.setProperty("mail.store.protocol", "imaps");
-		// javaMailProperties.setProperty("mail.debug", "true");
-
 		ReceivingProperties receivingProperties = properties.getReceive();
 
-		String userInfo = String.format("%s:%s", receivingProperties.getUsername(), receivingProperties.getPassword());
+		ClientCredentialsTokenProvider tokenProvider = new ClientCredentialsTokenProvider(properties.getOauth());
 
-		String url = String.format("%s://%s@%s:%d/INBOX", receivingProperties.getProtocol(),
-				UriUtils.encodeUserInfo(userInfo, StandardCharsets.UTF_8),
+		java.util.Properties javaMailProperties = new java.util.Properties();
+		javaMailProperties.put("mail.store.protocol", "imap");
+		javaMailProperties.put("mail.imap.host", receivingProperties.getHost());
+		javaMailProperties.put("mail.imap.port", "" + receivingProperties.getPort());
+		javaMailProperties.put("mail.imap.ssl.enable", "true");
+		javaMailProperties.put("mail.imap.starttls.enable", "true");
+		javaMailProperties.put("mail.imap.auth", "true");
+		javaMailProperties.put("mail.imap.auth.mechanisms", "XOAUTH2");
+		javaMailProperties.put("mail.imap.user", receivingProperties.getUsername());
+
+		/*
+		 * javaMailProperties.setProperty("mail.debug", "true");
+		 * javaMailProperties.setProperty("mail.debug.auth", "true");
+		 */
+
+		String url = String.format("imap://%s:%d/INBOX",
 				UriUtils.encodeHost(receivingProperties.getHost(), StandardCharsets.UTF_8),
 				receivingProperties.getPort());
 
@@ -62,6 +70,13 @@ class AppConfiguration {
 		ImapMailReceiver imapMailReceiver = new ImapMailReceiver(url);
 		imapMailReceiver.setJavaMailProperties(javaMailProperties);
 		imapMailReceiver.setShouldMarkMessagesAsRead(Boolean.TRUE);
+		imapMailReceiver.setJavaMailAuthenticator(new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				log.info("Getting password authentication.");
+				return new PasswordAuthentication(receivingProperties.getUsername(), tokenProvider.getToken());
+			}
+		});
 		return imapMailReceiver;
 	}
 

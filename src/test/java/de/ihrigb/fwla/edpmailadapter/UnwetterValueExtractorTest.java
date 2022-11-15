@@ -1,13 +1,13 @@
 package de.ihrigb.fwla.edpmailadapter;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.UnwetterProperties;
@@ -21,7 +21,7 @@ public class UnwetterValueExtractorTest {
 
 	private UnwetterValueExtractor testee;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		testee = new UnwetterValueExtractor(new UnwetterProperties());
 	}

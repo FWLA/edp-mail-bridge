@@ -2,8 +2,8 @@ package de.ihrigb.fwla.edpmailadapter;
 
 import java.util.Collections;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.mail.Email;
@@ -16,7 +16,7 @@ public class WritingEmailHandlerTest {
 	private ValueExtractor defaultValueExtractor;
 	private ValueExtractor valueExtractor;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		fileWriter = Mockito.mock(FileWriter.class);
 		defaultValueExtractor = Mockito.mock(ValueExtractor.class);

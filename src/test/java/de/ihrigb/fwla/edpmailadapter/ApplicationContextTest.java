@@ -1,7 +1,6 @@
 package de.ihrigb.fwla.edpmailadapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,32 +9,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.mail.Email;
 
-@Ignore
+@Disabled
 public class ApplicationContextTest {
 
 	private static Set<String> fileToLines(File file) throws IOException {
 		return Files.lines(file.toPath()).collect(Collectors.toSet());
 	}
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
-	private WritingEmailHandler writingEmailHandler;
+	@TempDir
 	private File tempDir;
+	private WritingEmailHandler writingEmailHandler;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
-
-		tempDir = folder.newFolder();
-
 		Properties properties = new Properties();
 		properties.setWrite(new Properties.WritingProperties());
 		properties.getWrite().setDirectory(tempDir.getAbsolutePath());
