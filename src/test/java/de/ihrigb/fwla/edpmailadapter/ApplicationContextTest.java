@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
-import de.ihrigb.fwla.mail.Email;
+import de.ihrigb.fwla.edpmailadapter.mail.Email;
 
 @Disabled
 public class ApplicationContextTest {

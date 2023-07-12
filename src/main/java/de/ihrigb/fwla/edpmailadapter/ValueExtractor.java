@@ -3,7 +3,7 @@ package de.ihrigb.fwla.edpmailadapter;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import de.ihrigb.fwla.mail.Email;
+import de.ihrigb.fwla.edpmailadapter.mail.Email;
 
 interface ValueExtractor {
 	void extract(Email<String> email, Consumer<Set<Value>> valuesConsumer);

@@ -2,13 +2,13 @@ package de.ihrigb.fwla.edpmailadapter;
 
 import java.io.IOException;
 
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Part;
-import javax.mail.internet.MimeMessage;
+import de.ihrigb.fwla.edpmailadapter.mail.EmailBodyConverter;
+import de.ihrigb.fwla.edpmailadapter.mail.EmailBodyConvertionException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Part;
+import jakarta.mail.internet.MimeMessage;
 
-import de.ihrigb.fwla.mail.EmailBodyConverter;
-import de.ihrigb.fwla.mail.EmailBodyConvertionException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,7 +24,7 @@ class PlainTextEmailBodyConverter implements EmailBodyConverter<String> {
 		}
 	}
 
-	private String getText(Part p) throws javax.mail.MessagingException, IOException {
+	private String getText(Part p) throws jakarta.mail.MessagingException, IOException {
 		if (p.isMimeType("text/*")) {
 			Object content = p.getContent();
 			return content == null ? null : content.toString();

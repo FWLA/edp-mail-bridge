@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.13</version>
+		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>de.ihrigb.fwla</groupId>
@@ -15,17 +15,14 @@
 	<description>Bridge to convert incoming Emails to Files.</description>
 
 	<properties>
+		<java.version>17</java.version>
 		<commons.version>0.0.7</commons.version>
 		<commons-io.version>2.13.0</commons-io.version>
 		<jackson-databind.version>2.15.2</jackson-databind.version>
+		<jakarta.mail.version>2.0.1</jakarta.mail.version>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>de.ihrigb.fwla</groupId>
-			<artifactId>mail-handler</artifactId>
-			<version>0.0.3</version>
-		</dependency>
 		<dependency>
 			<groupId>de.ihrigb.commons</groupId>
 			<artifactId>commons</artifactId>
@@ -67,6 +64,11 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>jakarta.mail</artifactId>
+			<version>${jakarta.mail.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -76,6 +78,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>edp-mail-bridge</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

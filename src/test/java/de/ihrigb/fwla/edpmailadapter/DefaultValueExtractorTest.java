@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ExtractionProperties;
-import de.ihrigb.fwla.mail.Email;
+import de.ihrigb.fwla.edpmailadapter.mail.Email;
 
 public class DefaultValueExtractorTest {
 

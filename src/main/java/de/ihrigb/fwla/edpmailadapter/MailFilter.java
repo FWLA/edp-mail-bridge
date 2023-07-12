@@ -2,8 +2,8 @@ package de.ihrigb.fwla.edpmailadapter;
 
 import de.ihrigb.commons.StringUtils;
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
-import de.ihrigb.fwla.mail.EmailSenderFilter;
-import de.ihrigb.fwla.mail.FilterResult;
+import de.ihrigb.fwla.edpmailadapter.mail.EmailSenderFilter;
+import de.ihrigb.fwla.edpmailadapter.mail.FilterResult;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

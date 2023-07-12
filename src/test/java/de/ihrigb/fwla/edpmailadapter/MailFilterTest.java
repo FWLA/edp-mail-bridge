@@ -7,7 +7,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
-import de.ihrigb.fwla.mail.FilterResult;
+import de.ihrigb.fwla.edpmailadapter.mail.FilterResult;
 
 public class MailFilterTest {
 

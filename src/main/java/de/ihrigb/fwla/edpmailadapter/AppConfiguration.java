@@ -4,9 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +15,10 @@ import org.springframework.messaging.MessageHandler;
 import org.springframework.web.util.UriUtils;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.ReceivingProperties;
-import de.ihrigb.fwla.mail.EmailBodyConverter;
-import de.ihrigb.fwla.mail.ReceivingMessageHandler;
+import de.ihrigb.fwla.edpmailadapter.mail.EmailBodyConverter;
+import de.ihrigb.fwla.edpmailadapter.mail.ReceivingMessageHandler;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

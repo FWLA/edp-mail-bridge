@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import de.ihrigb.fwla.edpmailadapter.Properties.UnwetterProperties;
-import de.ihrigb.fwla.mail.Email;
+import de.ihrigb.fwla.edpmailadapter.mail.Email;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

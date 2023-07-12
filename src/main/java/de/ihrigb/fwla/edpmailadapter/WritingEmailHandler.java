@@ -2,8 +2,8 @@ package de.ihrigb.fwla.edpmailadapter;
 
 import java.util.List;
 
-import de.ihrigb.fwla.mail.Email;
-import de.ihrigb.fwla.mail.EmailHandler;
+import de.ihrigb.fwla.edpmailadapter.mail.Email;
+import de.ihrigb.fwla.edpmailadapter.mail.EmailHandler;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
