@@ -33,3 +33,13 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
+    - name: remove SNAPSHOT suffix
+      run: mvn versions:set -DremoveSnapshot -DgenerateBackupPoms=false -DinteractiveMode=false
+
+    - name: Extract project version
+      run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      id: project
+
+    - name: Show extracted project version
+      run: echo ${{ steps.project.outputs.version }}
