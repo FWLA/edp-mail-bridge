@@ -18,7 +18,7 @@
 		<java.version>17</java.version>
 		<commons.version>0.0.7</commons.version>
 		<commons-io.version>2.13.0</commons-io.version>
-		<jackson-databind.version>2.15.2</jackson-databind.version>
+		<jackson-databind.version>2.17.2</jackson-databind.version>
 		<jakarta.mail.version>2.0.1</jakarta.mail.version>
 	</properties>
 
